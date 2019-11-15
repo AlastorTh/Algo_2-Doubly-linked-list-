@@ -72,6 +72,26 @@ public:
         size = 0;
     }
 
+	void search(const Type& value) 
+	{
+		if (empty())
+			return;
+		else 
+		{
+			ListItem* iterator = head;
+			for (size_t it = 0; it < size; ++it) 
+			{
+				if (iterator->_data == value) 
+				{
+					std::cout << "Item found: [" << it << "] " << std::endl;
+				}
+				iterator = iterator->_next;
+			}
+		}
+	}
+
+
+
     template <class T>
     friend std::ostream& operator<<(std::ostream&, const List<T>&);
 
