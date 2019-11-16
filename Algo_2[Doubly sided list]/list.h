@@ -3,127 +3,149 @@
 
 #include <iostream>
 
-template <class Type>
+template <class Type> // шаблон для использования любого типа данных    
 class List {
-    struct ListItem;
-    ListItem *head;
-    size_t size;
+	struct ListItem;  //элемент списка
+	ListItem* head; // указатель головы списка
+	size_t size; // размер списка
 public:
-    List() : head(nullptr), size(0) {};
+	List() : head(nullptr), size(0) {}; // конструктор для инициализации
 
-    void append(size_t idx, const Type& value) {
-        ListItem* new_item = new ListItem{value};
+	void append(size_t idx, const Type& value)  // вставка в любой индекс 
+	{
+		ListItem* new_item = new ListItem{ value }; // выделение динамической памяти для нового элемента 
 
-        if(!empty()) {
-            idx %= size;
-            ListItem* insert = head; 
-            for (size_t it = 0; it < idx; ++it)
-                insert = insert->_next;
+		if (!empty())
+		{
+			idx %= size;
+			ListItem* insert = head;
+			for (size_t it = 0; it < idx; ++it) //переход к индексу
+				insert = insert->_next;
 
-            new_item->_next = insert;
-            new_item->_prev = insert->_prev;
-            insert->_prev->_next = new_item;
-            insert->_prev = new_item;
+			new_item->_next = insert;
+			new_item->_prev = insert->_prev;
+			insert->_prev->_next = new_item;
+			insert->_prev = new_item;
 
-            if (!idx) {
-                 head = new_item;
-            } 
-        } else {
-            head = new_item;
-            new_item->_next = new_item;
-            new_item->_prev = new_item;
-        }
-        ++size;
-    }
-    
-    void erase() {
-        if(empty())
-            return;
+			if (!idx)
+			{
+				head = new_item;
+			}
+		}
+		else
+		{
+			head = new_item;
+			new_item->_next = new_item;
+			new_item->_prev = new_item;
+		}
+		++size;
+	}
 
-        if (head == head->_prev) {
-            clear();
-            return;
-        }
+	void erase() // выборка из начала 
+	{
+		if (empty()) // список пуст
+		{
+			std:: cout << "Нельзя выбрать из пустого списка" << std::endl;
+		}
+		return;
 
-        ListItem *next = head->_next, *prev = head->_prev; 
-        prev->_next = next;
-        next->_prev = prev;
+		if (head == head->_prev) // в списке 1 элемент 
+		{
+			clear();
+			return;
+		}
 
-        head->_next = nullptr;
-        delete head;
+		ListItem* next = head->_next, * prev = head->_prev;
+		prev->_next = next;
+		next->_prev = prev;
 
-        head = next;
-        --size;
-    }
+		head->_next = nullptr;
+		delete head;
 
-    bool empty() const {
-        if (head)
-            return false;
-        return true;
-    }
-    
-    void clear() {
-        if (empty())
-            return;
+		head = next;
+		--size;
+	}
 
-        head->_prev->_next = nullptr;
-        delete head;
-        head = nullptr;
-        size = 0;
-    }
+	bool empty() const // флаг пустоты 
+	{
+		if (head)
+			return false;
+		return true;
+	}
 
-	void search(const Type& value) 
+	void clear()   // очистка списка  
 	{
 		if (empty())
 			return;
-		else 
+
+		head->_prev->_next = nullptr;
+		delete head;
+		head = nullptr;
+		size = 0;
+	}
+
+	void search(const Type& value) // поиск указанного значения в списке
+	{
+		if (empty())
+			return;
+		else
 		{
 			ListItem* iterator = head;
-			for (size_t it = 0; it < size; ++it) 
+			for (size_t it = 0; it < size; ++it)
 			{
-				if (iterator->_data == value) 
+				if (iterator->_data == value)
 				{
 					std::cout << "Item found: [" << it << "] " << std::endl;
 				}
-				iterator = iterator->_next;
+				iterator = iterator->_next; // переход к следующему элементу списка
 			}
 		}
 	}
 
 
 
-    template <class T>
-    friend std::ostream& operator<<(std::ostream&, const List<T>&);
+	template <class T>
+	friend std::ostream& operator<<(std::ostream&, const List<T>&);  // прототип перегрузки оператора вывода
 
-    ~List() {
-        clear();
-    }
+	~List() // деструктор списка
+	{
+		clear();
+	}
 };
 
 template<class Type>
-std::ostream& operator<<(std::ostream& os, const List<Type>& list) {
-    const typename List<Type>::ListItem* iterator = list.head;
-    for (size_t it = 0; it < list.size; ++it) {
-        os << '[' << it << "] " << *iterator << std::endl;
-        iterator = iterator->_next;
-    }
-    return os;
+std::ostream& operator<<(std::ostream& os, const List<Type>& list) // перегрузка оператора вывода для списка 
+{
+	const typename List<Type>::ListItem* iterator = list.head;
+	for (size_t it = 0; it < list.size; ++it)
+	{
+		os << '[' << it << "] " << *iterator << std::endl;
+		iterator = iterator->_next;
+	}
+	return os;
 }
 
 
+
+
+
 template <class Type>
-struct List<Type>::ListItem {
-    Type _data = Type();
-    ListItem *_next = nullptr, *_prev = nullptr;
+struct List<Type>::ListItem // структура элемента в классе Список 
+{
+	Type _data = Type(); // определение типа поля соответственно заданному при объявлении List
+	ListItem* _next = nullptr; // указатель на следующий элемент
+	ListItem *_prev = nullptr; // указатель на предыдущий элемент
 
-    friend std::ostream& operator<<(std::ostream& os, const ListItem& item) {
-         os << item._data;
-        return os;
-    }
+	friend std::ostream& operator<<(std::ostream& os, const ListItem& item) // перегрузка оператора вывода для элемента
+	{
+		os << item._data; // при вызове оператора << выводить поле .data 
+		return os;
+	}
 
-    ~ListItem() {
-        delete _next;
-    }
+	~ListItem() // деструктор. В случае удаления  удалить следующий от него
+	{
+		delete _next;
+	}
 };
 
 
