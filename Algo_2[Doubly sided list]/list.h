@@ -2,24 +2,26 @@
 #define _LIST_H
 
 #include <iostream>
+#include <locale.h>
 
-template <class Type> // шаблон для использования любого типа данных    
+
+template <class Type> // С€Р°Р±Р»РѕРЅ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ Р»СЋР±РѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С…    
 class List {
-	struct ListItem;  //элемент списка
-	ListItem* head; // указатель головы списка
-	size_t size; // размер списка
+	struct ListItem;  //СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР°
+	ListItem* head; // СѓРєР°Р·Р°С‚РµР»СЊ РіРѕР»РѕРІС‹ СЃРїРёСЃРєР°
+	size_t size; // СЂР°Р·РјРµСЂ СЃРїРёСЃРєР°
 public:
-	List() : head(nullptr), size(0) {}; // конструктор для инициализации
+	List() : head(nullptr), size(0) {}; // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґР»СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
 
-	void append(size_t idx, const Type& value)  // вставка в любой индекс 
+	void append(size_t idx, const Type& value)  // РІСЃС‚Р°РІРєР° РІ Р»СЋР±РѕР№ РёРЅРґРµРєСЃ 
 	{
-		ListItem* new_item = new ListItem{ value }; // выделение динамической памяти для нового элемента 
+		ListItem* new_item = new ListItem{ value }; // РІС‹РґРµР»РµРЅРёРµ РґРёРЅР°РјРёС‡РµСЃРєРѕР№ РїР°РјСЏС‚Рё РґР»СЏ РЅРѕРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° 
 
 		if (!empty())
 		{
 			idx %= size;
 			ListItem* insert = head;
-			for (size_t it = 0; it < idx; ++it) //переход к индексу
+			for (size_t it = 0; it < idx; ++it) //РїРµСЂРµС…РѕРґ Рє РёРЅРґРµРєСЃСѓ
 				insert = insert->_next;
 
 			new_item->_next = insert;
@@ -41,15 +43,16 @@ public:
 		++size;
 	}
 
-	void erase() // выборка из начала 
+	void erase() // РІС‹Р±РѕСЂРєР° РёР· РЅР°С‡Р°Р»Р° 
 	{
-		if (empty()) // список пуст
+		if (empty()) // СЃРїРёСЃРѕРє РїСѓСЃС‚
 		{
-			std:: cout << "Нельзя выбрать из пустого списка" << std::endl;
+			std:: cout << "РќРµР»СЊР·СЏ РІС‹Р±СЂР°С‚СЊ РёР· РїСѓСЃС‚РѕРіРѕ СЃРїРёСЃРєР°" << std::endl;
+			return;
 		}
-		return;
+		
 
-		if (head == head->_prev) // в списке 1 элемент 
+		if (head == head->_prev) // РІ СЃРїРёСЃРєРµ 1 СЌР»РµРјРµРЅС‚ 
 		{
 			clear();
 			return;
@@ -66,14 +69,14 @@ public:
 		--size;
 	}
 
-	bool empty() const // флаг пустоты 
+	bool empty() const // С„Р»Р°Рі РїСѓСЃС‚РѕС‚С‹ 
 	{
 		if (head)
 			return false;
 		return true;
 	}
 
-	void clear()   // очистка списка  
+	void clear()   // РѕС‡РёСЃС‚РєР° СЃРїРёСЃРєР°  
 	{
 		if (empty())
 			return;
@@ -84,7 +87,7 @@ public:
 		size = 0;
 	}
 
-	void search(const Type& value) // поиск указанного значения в списке
+	void search(const Type& value) // РїРѕРёСЃРє СѓРєР°Р·Р°РЅРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ РІ СЃРїРёСЃРєРµ
 	{
 		if (empty())
 			return;
@@ -97,7 +100,7 @@ public:
 				{
 					std::cout << "Item found: [" << it << "] " << std::endl;
 				}
-				iterator = iterator->_next; // переход к следующему элементу списка
+				iterator = iterator->_next; // РїРµСЂРµС…РѕРґ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СЌР»РµРјРµРЅС‚Сѓ СЃРїРёСЃРєР°
 			}
 		}
 	}
@@ -105,16 +108,20 @@ public:
 
 
 	template <class T>
-	friend std::ostream& operator<<(std::ostream&, const List<T>&);  // прототип перегрузки оператора вывода
+	friend std::ostream& operator<<(std::ostream&, const List<T>&);  // РїСЂРѕС‚РѕС‚РёРї РїРµСЂРµРіСЂСѓР·РєРё РѕРїРµСЂР°С‚РѕСЂР° РІС‹РІРѕРґР°
 
-	~List() // деструктор списка
+	~List() // РґРµСЃС‚СЂСѓРєС‚РѕСЂ СЃРїРёСЃРєР°
 	{
 		clear();
+		if (empty()) 
+		{
+			std::cout << "\nРЎРїРёСЃРѕРє РїСѓСЃС‚!";
+		}
 	}
 };
 
 template<class Type>
-std::ostream& operator<<(std::ostream& os, const List<Type>& list) // перегрузка оператора вывода для списка 
+std::ostream& operator<<(std::ostream& os, const List<Type>& list) // РїРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° РІС‹РІРѕРґР° РґР»СЏ СЃРїРёСЃРєР° 
 {
 	const typename List<Type>::ListItem* iterator = list.head;
 	for (size_t it = 0; it < list.size; ++it)
@@ -122,6 +129,7 @@ std::ostream& operator<<(std::ostream& os, const List<Type>& list) // перегрузка
 		os << '[' << it << "] " << *iterator << std::endl;
 		iterator = iterator->_next;
 	}
+	
 	return os;
 }
 
@@ -130,19 +138,19 @@ std::ostream& operator<<(std::ostream& os, const List<Type>& list) // перегрузка
 
 
 template <class Type>
-struct List<Type>::ListItem // структура элемента в классе Список 
+struct List<Type>::ListItem // СЃС‚СЂСѓРєС‚СѓСЂР° СЌР»РµРјРµРЅС‚Р° РІ РєР»Р°СЃСЃРµ РЎРїРёСЃРѕРє 
 {
-	Type _data = Type(); // определение типа поля соответственно заданному при объявлении List
-	ListItem* _next = nullptr; // указатель на следующий элемент
-	ListItem *_prev = nullptr; // указатель на предыдущий элемент
+	Type _data = Type(); // РѕРїСЂРµРґРµР»РµРЅРёРµ С‚РёРїР° РїРѕР»СЏ СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РїСЂРё РѕР±СЉСЏРІР»РµРЅРёРё List
+	ListItem* _next = nullptr; // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚
+	ListItem *_prev = nullptr; // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїСЂРµРґС‹РґСѓС‰РёР№ СЌР»РµРјРµРЅС‚
 
-	friend std::ostream& operator<<(std::ostream& os, const ListItem& item) // перегрузка оператора вывода для элемента
+	friend std::ostream& operator<<(std::ostream& os, const ListItem& item) // РїРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° РІС‹РІРѕРґР° РґР»СЏ СЌР»РµРјРµРЅС‚Р°
 	{
-		os << item._data; // при вызове оператора << выводить поле .data 
+		os << item._data; // РїСЂРё РІС‹Р·РѕРІРµ РѕРїРµСЂР°С‚РѕСЂР° << РІС‹РІРѕРґРёС‚СЊ РїРѕР»Рµ .data 
 		return os;
 	}
 
-	~ListItem() // деструктор. В случае удаления  удалить следующий от него
+	~ListItem() // РґРµСЃС‚СЂСѓРєС‚РѕСЂ. Р’ СЃР»СѓС‡Р°Рµ СѓРґР°Р»РµРЅРёСЏ  СѓРґР°Р»РёС‚СЊ СЃР»РµРґСѓСЋС‰РёР№ РѕС‚ РЅРµРіРѕ
 	{
 		delete _next;
 	}
